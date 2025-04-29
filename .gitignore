@@ -1,0 +1,107 @@
+# --- General ---
+# Environment variables - IMPORTANT: Never commit secrets!
+.env
+backend/.env
+frontend/.env
+.env.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE / Editor directories
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Log files
+*.log
+logs/
+*.log.*
+
+# --- Python / Django (Backend) ---
+# Virtual environment
+backend/venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Django specific
+*.mo
+*.pot
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
+media/ # Usually user-uploaded files, manage separately
+
+# Celery files (if used later)
+celerybeat-schedule
+celerybeat.pid
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# --- Node / React / Vite (Frontend) ---
+# Node modules
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+frontend/build/
+frontend/.next/ # If using Next.js later
+frontend/.output/
+frontend/.vite/
+
+# Debug logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# Local overrides
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Optional ESLint cache
+frontend/.eslintcache
+
+# Optional Prettier cache
+frontend/.prettiercache
+
+# Optional TypeScript build info
+frontend/*.tsbuildinfo
+
+# --- Other ---
+# Add any other project-specific files or directories to ignore here
+
