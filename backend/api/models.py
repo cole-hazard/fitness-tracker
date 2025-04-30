@@ -98,3 +98,4 @@ class Plan(models.Model):
 
     # Add logic to ensure only one plan is active per user if needed (e.g., in save method)
 
+# ADD user here
