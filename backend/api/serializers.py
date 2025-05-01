@@ -4,6 +4,7 @@ from .models import (
     MuscleGroup, Exercise, Workout, WorkoutExercise, Plan,
     ExerciseMuscleActivation # Import the new model
 )
+from django.contrib.auth.password_validation import validate_password
 
 class MuscleGroupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -143,3 +144,58 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
+
+class RegisterSerializer(serializers.ModelSerializer):
+    """
+    Serializer for user registration.
+    Handles validation and creation of a new user.
+    Includes password confirmation.
+    """
+    password = serializers.CharField(
+        write_only=True, required=True, validators=[validate_password] # Use Django's password validation
+    )
+    password2 = serializers.CharField(write_only=True, required=True, label="Confirm password") # Add confirmation field
+
+    class Meta:
+        model = User # Use Django's built-in User model
+        fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name') # Fields required for registration
+        extra_kwargs = {
+            'first_name': {'required': False}, # Make optional if desired
+            'last_name': {'required': False},
+            'email': {'required': True} # Make email required
+        }
+
+    def validate(self, attrs):
+        """
+        Check that the two password entries match.
+        """
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+        # Remove password2 from the validated data before creating the user
+        attrs.pop('password2')
+        return attrs
+
+    def create(self, validated_data):
+        """
+        Create and return a new user instance, given the validated data.
+        Handles password hashing automatically via create_user.
+        """
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            # Use set_password to hash the password correctly
+            # create_user handles this automatically
+        )
+        # Set optional fields if provided
+        if 'first_name' in validated_data:
+            user.first_name = validated_data['first_name']
+        if 'last_name' in validated_data:
+            user.last_name = validated_data['last_name']
+
+        # IMPORTANT: Set the password *after* creating the user instance
+        # using create_user already hashes it, but if you used create() directly,
+        # you would need user.set_password(validated_data['password'])
+        user.set_password(validated_data['password']) # Ensure password is set and hashed
+        user.save()
+
+        return user

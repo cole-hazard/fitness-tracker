@@ -1,10 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-# Import the views from the api app's views.py
 from . import views
+# simplejwt views
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
-# Create a router instance.
-# DefaultRouter automatically creates the standard API routes (list, create, retrieve, update, destroy).
+# DefaultRouter automatically creates the standard API routes (list, create, retrieve, update, destroy)
 router = DefaultRouter()
 
 # Register the ViewSets with the router.
@@ -26,6 +29,10 @@ urlpatterns = [
     # Requests to '/api/muscle-groups/', '/api/exercises/1/', etc., will be handled.
     path('', include(router.urls)),
 
-    # You might add other specific API paths here later if needed,
-    # for example, for authentication endpoints (JWT).
+    # Authentication URLs
+    path('auth/register/', views.RegisterView.as_view(), name='auth_register'),
+
+    path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+
+    path('auth/login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

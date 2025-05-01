@@ -111,6 +111,22 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    # --- Default Authentication Classes ---
+    # Define how users are authenticated.
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+
+    # --- Optional: Default Pagination ---
+    # Uncomment and configure if you want pagination on list views by default.
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 10
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

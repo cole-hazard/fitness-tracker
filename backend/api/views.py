@@ -1,11 +1,11 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, generics
 from django.contrib.auth.models import User
 from .models import (
      MuscleGroup, Exercise, Workout, Plan, # No need to import intermediate models directly here
      # ExerciseMuscleActivation, WorkoutExercise
 )
 from .serializers import (
-    MuscleGroupSerializer, ExerciseSerializer, WorkoutSerializer, PlanSerializer, UserSerializer
+    MuscleGroupSerializer, ExerciseSerializer, WorkoutSerializer, PlanSerializer, UserSerializer, RegisterSerializer
     # No need to import intermediate serializers directly here
     # ExerciseMuscleActivationSerializer, WorkoutExerciseSerializer
 )
@@ -36,6 +36,7 @@ class WorkoutViewSet(viewsets.ModelViewSet):
     # Optional owner filtering/assignment
     # def get_queryset(self): ...
     # def perform_create(self, serializer): ...
+    # might need this to automatically link user to their workouts
 
 class PlanViewSet(viewsets.ModelViewSet):
     serializer_class = PlanSerializer
@@ -59,3 +60,14 @@ class PlanViewSet(viewsets.ModelViewSet):
 
     # Optional: @action for set_active etc.
     # ...
+
+
+class RegisterView(generics.CreateAPIView):
+    """
+    API view for user registration.
+    Allows any user (even unauthenticated) to create a new account.
+    """
+    queryset = User.objects.all()
+    permission_classes = (permissions.AllowAny,) # Anyone can register
+    serializer_class = RegisterSerializer
+
