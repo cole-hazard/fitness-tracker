@@ -51,26 +51,26 @@ function RegisterPage() {
   if (isAuthenticated) return null
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6 md:p-10">
-      <Card className="mx-auto w-full max-w-sm"> {/* ⭐ changed (same fix) */}
-        <CardHeader>
-          <CardTitle className="text-2xl">Create an account</CardTitle>
-          <CardDescription>
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-background px-4 py-8">
+      <Card className="w-full max-w-md border shadow-sm">
+        <CardHeader className="space-y-1 pb-2">
+          <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
+          <CardDescription className="text-sm text-muted-foreground">
             Enter your information to get started
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="pb-6 pt-2">
           {error.general && (
-            <div className="mb-6 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-center text-sm text-destructive">
+            <div className="mb-4 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-center text-sm text-destructive">
               {error.general}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="grid gap-6"> {/* ⭐ changed */}
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* username */}
-            <div className="grid gap-2">
-              <Label htmlFor="username">Username</Label>
+            <div className="space-y-2">
+              <Label htmlFor="username" className="text-sm font-medium">Username</Label>
               <Input
                 id="username"
                 type="text"
@@ -80,7 +80,7 @@ function RegisterPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={isLoading}
-                className={error.username ? 'border-destructive' : ''}
+                className={`h-10 ${error.username ? 'border-destructive' : ''}`}
               />
               {error.username && (
                 <p className="text-xs text-destructive">{error.username}</p>
@@ -88,8 +88,8 @@ function RegisterPage() {
             </div>
 
             {/* email */}
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -99,7 +99,7 @@ function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
-                className={error.email ? 'border-destructive' : ''}
+                className={`h-10 ${error.email ? 'border-destructive' : ''}`}
               />
               {error.email && (
                 <p className="text-xs text-destructive">{error.email}</p>
@@ -107,8 +107,8 @@ function RegisterPage() {
             </div>
 
             {/* pw */}
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -119,7 +119,7 @@ function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
-                className={error.password ? 'border-destructive' : ''}
+                className={`h-10 ${error.password ? 'border-destructive' : ''}`}
               />
               {error.password && (
                 <p className="text-xs text-destructive">{error.password}</p>
@@ -127,8 +127,8 @@ function RegisterPage() {
             </div>
 
             {/* confirm */}
-            <div className="grid gap-2">
-              <Label htmlFor="password2">Confirm Password</Label>
+            <div className="space-y-2">
+              <Label htmlFor="password2" className="text-sm font-medium">Confirm Password</Label>
               <Input
                 id="password2"
                 type="password"
@@ -138,22 +138,22 @@ function RegisterPage() {
                 value={password2}
                 onChange={(e) => setPassword2(e.target.value)}
                 disabled={isLoading}
-                className={error.password2 ? 'border-destructive' : ''}
+                className={`h-10 ${error.password2 ? 'border-destructive' : ''}`}
               />
               {error.password2 && (
                 <p className="text-xs text-destructive">{error.password2}</p>
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Creating account…' : 'Create Account'}
+            <Button type="submit" className="mt-2 w-full h-10" disabled={isLoading}>
+              {isLoading ? 'Creating account…' : 'Create account'}
             </Button>
           </form>
 
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-6 text-center text-sm">
             Already have an account?{' '}
-            <Link to="/login" className="underline underline-offset-4">
-              Log in
+            <Link to="/login" className="font-medium text-primary underline-offset-4 hover:underline">
+              Sign in
             </Link>
           </div>
         </CardContent>

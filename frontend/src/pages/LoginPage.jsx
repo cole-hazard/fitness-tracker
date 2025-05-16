@@ -1,4 +1,4 @@
-// src/pages/LoginPage.jsx
+// Complete replacement for LoginPage.jsx
 import React, { useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
@@ -53,32 +53,32 @@ function LoginPage() {
   if (isAuthenticated) return null
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6 md:p-10">
-      <Card className="mx-auto w-full max-w-sm"> {/* ⭐ changed (was w-full sm:w-[350px]) */}
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-background px-4 py-8">
+      <Card className="w-full max-w-md border shadow-sm">
+        <CardHeader className="space-y-1 pb-2">
+          <CardTitle className="text-2xl font-bold">Login</CardTitle>
+          <CardDescription className="text-sm text-muted-foreground">
             Enter your username below to login to your account
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="pb-6 pt-2">
           {/* flash messages */}
           {successMessage && (
-            <div className="mb-6 rounded-md border border-green-200 bg-green-100 p-3 text-sm text-green-700">
+            <div className="mb-4 rounded-md border border-green-200 bg-green-100 p-3 text-sm text-green-700">
               {successMessage}
             </div>
           )}
           {error && !successMessage && (
-            <div className="mb-6 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-center text-sm text-destructive">
+            <div className="mb-4 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-center text-sm text-destructive">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="grid gap-6"> {/* ⭐ changed (grid gap-6) */}
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* user */}
-            <div className="grid gap-2">
-              <Label htmlFor="username">Username</Label>
+            <div className="space-y-2">
+              <Label htmlFor="username" className="text-sm font-medium">Username</Label>
               <Input
                 id="username"
                 type="text"
@@ -88,16 +88,17 @@ function LoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={isLoading}
+                className="h-10"
               />
             </div>
 
             {/* password */}
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                 <Link
                   to="/forgot-password"
-                  className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                  className="text-xs font-medium text-primary underline-offset-4 hover:underline"
                 >
                   Forgot your password?
                 </Link>
@@ -111,16 +112,27 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
+                className="h-10"
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="mt-2 w-full h-10" disabled={isLoading}>
               {isLoading ? 'Logging in…' : 'Login'}
             </Button>
+            
+            <div className="relative my-2">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t"></span>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+              </div>
+            </div>
+            
             <Button
               type="button"
               variant="outline"
-              className="w-full"
+              className="w-full h-10"
               disabled={isLoading}
               onClick={() => alert('Google login not implemented yet!')}
             >
@@ -128,9 +140,9 @@ function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-6 text-center text-sm">
             Don&apos;t have an account?{' '}
-            <Link to="/register" className="underline underline-offset-4">
+            <Link to="/register" className="font-medium text-primary underline-offset-4 hover:underline">
               Sign up
             </Link>
           </div>

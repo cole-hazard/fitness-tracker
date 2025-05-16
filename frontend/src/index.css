@@ -137,6 +137,9 @@
   This defines some global styles for elements.
 */
 @layer base {
+  html, body, #root { /* ⭐ MODIFIED: Added html, #root and applied h-full for proper viewport height */
+    @apply h-full;
+  }
   * {
     @apply border-border outline-ring/50; /* Shadcn often adds this for default borders/outlines */
   }
