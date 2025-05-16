@@ -1,112 +1,75 @@
 // src/pages/RegisterPage.jsx
-// --- RegisterPage Component with Shadcn UI (Visually Aligned) ---
+import React, { useState, useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { useAuthStore } from '../store/authStore'
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
-
-// Shadcn UI Components
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-// Optional: For loading spinner icon
-// import { Loader2 } from "lucide-react";
+  Card, CardContent, CardDescription, CardHeader, CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 function RegisterPage() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [password2, setPassword2] = useState('');
-  const [error, setError] = useState({}); // Keep as object for field-specific errors
-  const [isLoading, setIsLoading] = useState(false);
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [password2, setPassword2] = useState('')
+  const [error, setError] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
 
-  const register = useAuthStore((state) => state.register);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const navigate = useNavigate();
+  const register = useAuthStore((s) => s.register)
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const navigate = useNavigate()
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/');
-    }
-  }, [isAuthenticated, navigate]);
+  useEffect(() => { if (isAuthenticated) navigate('/') }, [isAuthenticated, navigate])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    let currentErrors = {}; // Local errors for this submission
-
-    if (password !== password2) {
-      currentErrors.password2 = 'Passwords do not match.';
-    }
-    if (password.length < 8) {
-      currentErrors.password = 'Password must be at least 8 characters long.';
-    }
-
-    if (Object.keys(currentErrors).length > 0) {
-      setError(currentErrors);
-      setIsLoading(false);
-      return;
-    }
-
-    setError({}); // Clear previous errors before API call
-    setIsLoading(true);
+    e.preventDefault()
+    const errs = {}
+    if (password !== password2) errs.password2 = 'Passwords do not match.'
+    if (password.length < 8) errs.password = 'Password must be at least 8 characters long.'
+    if (Object.keys(errs).length) { setError(errs); return }
 
     try {
-      const success = await register({ username, email, password, password2 });
-      if (success) {
-        navigate('/login?registered=true');
-      }
+      setIsLoading(true)
+      await register({ username, email, password, password2 })
+      navigate('/login?registered=true')
     } catch (err) {
-      let formattedError = {};
-      if (err.response && err.response.data) {
-        Object.keys(err.response.data).forEach(key => {
-          const message = Array.isArray(err.response.data[key])
-                          ? err.response.data[key].join(' ')
-                          : String(err.response.data[key]);
-          formattedError[key] = message;
-        });
-        if (Object.keys(formattedError).length === 0 && err.response.data.detail) {
-          formattedError.general = err.response.data.detail;
-        }
-      } else {
-        formattedError.general = 'Registration failed. Please try again.';
-      }
-      if (Object.keys(formattedError).length === 0 && !formattedError.general ) {
-         formattedError.general = 'An unexpected error occurred.';
-      }
-      setError(formattedError);
+      const api = err?.response?.data || {}
+      const formatted = Object.keys(api).length
+        ? Object.fromEntries(
+            Object.entries(api).map(([k, v]) => [k, Array.isArray(v) ? v.join(' ') : String(v)])
+          )
+        : { general: 'Registration failed. Please try again.' }
+      setError(formatted)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
-
-  if (isAuthenticated) {
-    return null;
   }
 
+  if (isAuthenticated) return null
+
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-background p-6 md:p-10">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
+    <div className="flex min-h-screen w-full items-center justify-center p-6 md:p-10">
+      <Card className="mx-auto w-full max-w-sm"> {/* ⭐ changed (same fix) */}
+        <CardHeader>
+          <CardTitle className="text-2xl">Create an account</CardTitle>
           <CardDescription>
-            Enter your information to get started.
+            Enter your information to get started
           </CardDescription>
         </CardHeader>
+
         <CardContent>
           {error.general && (
-            <div className="mb-4 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-center text-sm text-destructive">
+            <div className="mb-6 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-center text-sm text-destructive">
               {error.general}
             </div>
           )}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
+
+          <form onSubmit={handleSubmit} className="grid gap-6"> {/* ⭐ changed */}
+            {/* username */}
+            <div className="grid gap-2">
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
@@ -117,12 +80,15 @@ function RegisterPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={isLoading}
-                className={error.username ? "border-destructive" : ""}
+                className={error.username ? 'border-destructive' : ''}
               />
-              {error.username && <p className="mt-1 text-xs text-destructive">{error.username}</p>}
+              {error.username && (
+                <p className="text-xs text-destructive">{error.username}</p>
+              )}
             </div>
 
-            <div className="space-y-2">
+            {/* email */}
+            <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -133,29 +99,35 @@ function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
-                className={error.email ? "border-destructive" : ""}
+                className={error.email ? 'border-destructive' : ''}
               />
-              {error.email && <p className="mt-1 text-xs text-destructive">{error.email}</p>}
+              {error.email && (
+                <p className="text-xs text-destructive">{error.email}</p>
+              )}
             </div>
 
-            <div className="space-y-2">
+            {/* pw */}
+            <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
                 placeholder="•••••••• (min 8 chars)"
                 required
-                minLength="8"
+                minLength={8}
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
-                className={error.password ? "border-destructive" : ""}
+                className={error.password ? 'border-destructive' : ''}
               />
-              {error.password && <p className="mt-1 text-xs text-destructive">{error.password}</p>}
+              {error.password && (
+                <p className="text-xs text-destructive">{error.password}</p>
+              )}
             </div>
 
-            <div className="space-y-2">
+            {/* confirm */}
+            <div className="grid gap-2">
               <Label htmlFor="password2">Confirm Password</Label>
               <Input
                 id="password2"
@@ -166,25 +138,28 @@ function RegisterPage() {
                 value={password2}
                 onChange={(e) => setPassword2(e.target.value)}
                 disabled={isLoading}
-                className={error.password2 ? "border-destructive" : ""}
+                className={error.password2 ? 'border-destructive' : ''}
               />
-              {error.password2 && <p className="mt-1 text-xs text-destructive">{error.password2}</p>}
+              {error.password2 && (
+                <p className="text-xs text-destructive">{error.password2}</p>
+              )}
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Creating account..." : 'Create Account'}
+              {isLoading ? 'Creating account…' : 'Create Account'}
             </Button>
           </form>
+
           <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
-            <Link to="/login" className="font-medium underline underline-offset-4 hover:text-primary">
+            Already have an account?{' '}
+            <Link to="/login" className="underline underline-offset-4">
               Log in
             </Link>
           </div>
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }
 
-export default RegisterPage;
+export default RegisterPage
