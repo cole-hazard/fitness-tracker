@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -57,6 +58,51 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SIMPLE_JWT = {
+    # --- Access Token Lifetime ---
+    # How long the token used for actual API requests is valid.
+    # Default is 5 minutes. It's generally recommended to keep this short
+    # for security reasons, relying on the refresh token for longer sessions.
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+
+    # --- Refresh Token Lifetime ---
+    # How long the token used to obtain new access tokens is valid.
+    # This effectively controls the maximum user session duration without re-login.
+    # Changed from the default (1 day) to 7 days.
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+
+    # --- Other Optional Settings ---
+    # These are defaults, include them only if you need to change them.
+    'ROTATE_REFRESH_TOKENS': False, # Set to True if you want a new refresh token issued each time it's used.
+    'BLACKLIST_AFTER_ROTATION': False, # Requires setting up a blacklist app if True.
+    'UPDATE_LAST_LOGIN': False, # Set to True to update user's last_login field on token refresh.
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY, # Uses Django's SECRET_KEY
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5), # Only relevant if using sliding tokens
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1), # Only relevant if using sliding tokens
+}
 
 ROOT_URLCONF = 'fitness_project.urls'
 
