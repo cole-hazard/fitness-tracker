@@ -1,6 +1,6 @@
 /* Import any external CSS files or Tailwind plugins first if needed */
 @import "tw-animate-css"; /* Your custom import - ensure this file exists and is compatible */
-@import "tailwindcss/preflight"; /* Tailwind v4 base/reset styles. Often automatically included by the PostCSS plugin, but explicit import is fine. */
+@import "tailwindcss"; /* Main Tailwind CSS v4 import */
 
 /*
   Tailwind v4 custom variant definition.
@@ -9,12 +9,6 @@
   (like custom variants or @theme) should come before the main @tailwind utilities directive.
 */
 @custom-variant dark (&:is(.dark *));
-
-/*
-  Tailwind utilities - this is essential and should typically come after
-  preflight and any custom variants or theme setup that utilities might depend on.
-*/
-@tailwind utilities;
 
 /*
   Shadcn/ui specific theme and CSS variables.

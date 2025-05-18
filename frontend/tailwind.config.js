@@ -3,9 +3,6 @@
 export default {
   darkMode: ["class"], // Enables dark mode based on a class (usually on html or body)
   content: [
-    './pages/**/*.{js,jsx,ts,tsx}', // Adjust if your pages are elsewhere
-    './components/**/*.{js,jsx,ts,tsx}', // Adjust if your components are elsewhere
-    './app/**/*.{js,jsx,ts,tsx}', // Common for Next.js, include if relevant
     './src/**/*.{js,jsx,ts,tsx}', // General src directory
     './index.html', // Crucial for Vite to scan classes in your main HTML
   ],
